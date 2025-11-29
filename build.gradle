@@ -1,0 +1,36 @@
+plugins {
+    id 'java'
+}
+
+group = 'com.test'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.seleniumhq.selenium:selenium-java:4.10.0'
+    implementation 'org.testng:testng:7.10.2'
+}
+
+//test {
+//    useTestNG(){
+//        suiteXmlFiles = files("src/test/resources/testng.xml")
+//    }
+//}
+
+test {
+    useTestNG() {
+        // ambil nama suite dari -Psuite=... (default: testing.xml)
+        def suiteFile = project.hasProperty("suite") ? project.property("suite") : "testing.xml"
+        suites file("src/test/resources/${suiteFile}")
+    }
+
+    // teruskan parameter env ke System property (kalau nanti mau dipakai di BaseTest)
+    systemProperty "env", project.findProperty("env") ?: "staging"
+
+    testLogging {
+        events "PASSED", "FAILED", "SKIPPED"
+    }
+}
